@@ -1,5 +1,5 @@
 # dependencies
-node_modules
+node_modules/
 
 # yarn
 .yarn/*
@@ -21,3 +21,10 @@ node_modules
 
 # cli
 dist
+
+# sensible additions
+.env
+.build/
+artifacts/
+.cache/
+*.local

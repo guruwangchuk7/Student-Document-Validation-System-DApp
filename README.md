@@ -1,80 +1,149 @@
-# 🏗 Scaffold-ETH 2
+# StudentDocumentValidationSystem-Blockchain
 
-<h4 align="center">
-  <a href="https://docs.scaffoldeth.io">Documentation</a> |
-  <a href="https://scaffoldeth.io">Website</a>
-</h4>
+# 🚀 Project Overview
 
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts.
+The **Student Certificate Validation DApp** is a decentralized application that enables educational authorities to issue student certificates securely and allows companies to verify them with confidence.
+The system uses **Ethereum blockchain** and **IPFS** for immutable and tamper-proof storage of certificate data.
 
-⚙️ Built using NextJS, RainbowKit, Hardhat, Wagmi, Viem, and Typescript.
+---
 
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-- 🔐 **Integration with Wallet Providers**: Connect to different wallet providers and interact with the Ethereum network.
+# 👥 Team Members
 
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
 
-## Requirements
+**Team Lead:** Guru Wangchuk
 
-Before you begin, you need to install the following tools:
+**GitHub:** \[guruwangchuk7]
 
-- [Node (>= v20.18.3)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
-- [Git](https://git-scm.com/downloads)
+**Role:** Full Stack Developer & Blockchain Developer
 
-## Quickstart
 
-To get started with Scaffold-ETH 2, follow the steps below:
+**Member:** Sangay Rinchen
 
-1. Install dependencies if it was skipped in CLI:
+**GitHub:** \[]
 
+**Role:** FrontEnd Developer
+
+
+**Team Lead:** Lhawang Jamtsho
+
+**GitHub:** \[]
+
+**Role:** FrontEnd Developer
+
+# 🛠️ Technology Stack
+
+### --Frontend--
+
+* Next.js 14 (App Router)
+* TypeScript
+* Tailwind CSS
+* Heroicons
+* Axios
+* React Hooks
+* Toast
+
+### --Backend--
+
+* Node.js + Express.js
+* Pinata IPFS API
+* Ethers.js
+* Solidity Smart Contracts (Truffle / Scaffold-ETH)
+
+### --Database--
+
+* MySQL 
+
+### --Other Tools--
+
+* Pinata (IPFS)
+* Scaffold-ETH 2
+* Hardhat (local blockchain)
+
+---
+
+# 🎯 Problem Statement
+
+Many people and organizations struggle to verify the authenticity of certificates.
+Traditional systems are often **slow, costly**, and **vulnerable to fraud**, affecting employers, schools, and students alike.
+
+---
+
+## 🔑 Key Questions & Answers
+
+### What traditional centralized problem are you solving with decentralization?
+
+By storing certificates on **IPFS** and registering them on the **Ethereum blockchain**, we eliminate reliance on a single institution. Employers can verify certificates instantly—**no third-party or university contact required.**
+
+### How does your application empower users with data ownership?
+
+Students control their own verified, immutable certificates via IPFS. Once issued, universities cannot modify or revoke them—ensuring **permanent, tamper-proof proof of education.**
+This grants **global shareability and user-owned credentials**.
+
+---
+
+# 💡 Solution Breakdown
+
+### ✅ Decentralized Architecture
+
+* Uses **Ethereum + IPFS** for transparent, trustless data validation
+* No reliance on central institutions
+
+### ✅ User Empowerment
+
+* Students retain **full control** over their data
+* Institutions can’t delete, modify, or restrict access
+
+### ✅ Innovation Factor
+
+* One of the first DApps to offer secure, blockchain-based certificate verification
+* Bridges real-world educational records with decentralized technology
+
+---
+
+### 🚀 Getting Started
+
+```bash
+# Clone the repository
+git clone https://github.com/DevFest-Hackaton/DevFestTeam[XX].git
+cd DevFestTeam[XX]
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm run dev
 ```
-cd my-dapp-example
-yarn install
-```
 
-2. Run a local network in the first terminal:
+---
 
-```
-yarn chain
-```
+# 🌟 Key Features
 
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `packages/hardhat/hardhat.config.ts`.
+* **Decentralized Identity Management:** Self-sovereign identity features
+* **Data Ownership:** Students control their data via IPFS
+* **Blockchain Integration:** Transparent certificate issuance and verification
+* **User Authentication:** Decentralized login/session management
+* **\[Custom Feature 1]:** \[Description]
+* **\[Custom Feature 2]:** \[Description]
 
-3. On a second terminal, deploy the test contract:
+---
 
-```
-yarn deploy
-```
+# 🔐 Security & Privacy
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
+* **Data Protection:** Encryption and secure file handling
+* **Smart Contract Security:** Best practices for contract security
+* **Privacy Features:** Tamper-proof, user-owned credentials
 
-4. On a third terminal, start your NextJS app:
+---
 
-```
-yarn start
-```
+# 📱 Demo Links
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+* **Live Demo:** \[Insert URL if deployed]
+* **Video Demo:** \[Insert link]
+* **Presentation Slides:** \[Insert link]
 
-Run smart contract test with `yarn hardhat:test`
+---
 
-- Edit your smart contracts in `packages/hardhat/contracts`
-- Edit your frontend homepage at `packages/nextjs/app/page.tsx`. For guidance on [routing](https://nextjs.org/docs/app/building-your-application/routing/defining-routes) and configuring [pages/layouts](https://nextjs.org/docs/app/building-your-application/routing/pages-and-layouts) checkout the Next.js documentation.
-- Edit your deployment scripts in `packages/hardhat/deploy`
+# 📄 License
 
+See `License.txt` for full license terms.
 
-## Documentation
-
-Visit our [docs](https://docs.scaffoldeth.io) to learn how to start building with Scaffold-ETH 2.
-
-To know more about its features, check out our [website](https://scaffoldeth.io).
-
-## Contributing to Scaffold-ETH 2
-
-We welcome contributions to Scaffold-ETH 2!
-
-Please see [CONTRIBUTING.MD](https://github.com/scaffold-eth/scaffold-eth-2/blob/main/CONTRIBUTING.md) for more information and guidelines for contributing to Scaffold-ETH 2.
