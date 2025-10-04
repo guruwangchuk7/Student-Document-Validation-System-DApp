@@ -48,12 +48,12 @@ const Home: NextPage = () => {
             {/* Student Card */}
             <div className="card w-96 bg-base-100 shadow-xl">
               <div className="card-body items-center text-center">
-                <UserIcon className="h-12 w-12 text-secondary" />
+                <UserIcon className="h-12 w-12 text-primary" />
                 <h2 className="card-title">Student</h2>
                 <p>Access and view your digitally issued academic certificates.</p>
                 <div className="card-actions justify-end">
                   <Link href="/student" passHref className="link">
-                    <button className="btn btn-secondary">Go to Student Portal</button>
+                    <button className="btn btn-primary">Go to Student Portal</button>
                   </Link>
                 </div>
               </div>
