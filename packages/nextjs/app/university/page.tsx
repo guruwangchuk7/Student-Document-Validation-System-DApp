@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
+import toast from "react-hot-toast";
 import { ArrowUpOnSquareIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
 const UniversityAdmin = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [loginError, setLoginError] = useState("");
+  const [, setLoginError] = useState("");
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [certificateIdInput, setCertificateIdInput] = useState("");
@@ -20,8 +21,8 @@ const UniversityAdmin = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [studentIdentifier, setStudentIdentifier] = useState("");
 
-  const [status, setStatus] = useState("");
-  const [error, setError] = useState("");
+  const [, setStatus] = useState("");
+  const [, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -42,13 +43,18 @@ const UniversityAdmin = () => {
       });
 
       if (!res.ok) {
-        setLoginError("Invalid account. Please check your credentials.");
+        const msg = "Invalid account. Please check your credentials.";
+        setLoginError(msg);
+        toast.error(msg);
         return;
       }
       setIsLoggedIn(true);
+      toast.success("Logged in as admin");
     } catch {
       // FIX 1: Removed unused 'err' variable
-      setLoginError("An error occurred. Please try again.");
+      const msg = "An error occurred. Please try again.";
+      setLoginError(msg);
+      toast.error(msg);
     } finally {
       setIsLoggingIn(false);
     }
@@ -90,6 +96,7 @@ const UniversityAdmin = () => {
       if (!res.ok) throw new Error(data.error || "Unknown error");
 
       setStatus("Certificate issued successfully!");
+      toast.success("Certificate issued successfully");
       setCertificateIdInput("");
       setStudentFullName("");
       setGender("");
@@ -102,6 +109,7 @@ const UniversityAdmin = () => {
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err: any) {
       setError(err.message);
+      toast.error(err.message || "Failed to issue certificate");
     } finally {
       setIsSubmitting(false);
     }
@@ -141,7 +149,7 @@ const UniversityAdmin = () => {
                 onChange={e => setPassword(e.target.value)}
               />
             </div>
-            {loginError && <div className="text-error text-sm mt-2">{loginError}</div>}
+            {/* loginError is shown via toast to avoid duplicate notifications */}
             <div className="card-actions justify-end mt-4">
               <button className="btn btn-primary w-full" onClick={handleLogin} disabled={isLoggingIn}>
                 {isLoggingIn && <span className="loading loading-spinner"></span>} Login
@@ -278,8 +286,7 @@ const UniversityAdmin = () => {
               {isSubmitting ? "Processing..." : "Issue Certificate"}
             </button>
           </div>
-          {error && <div className="alert alert-error mt-4">{error}</div>}
-          {status && <div className="alert alert-success mt-4">{status}</div>}
+          {/* errors and status are shown via toast to avoid duplicate notifications */}
         </div>
       </div>
     </div>

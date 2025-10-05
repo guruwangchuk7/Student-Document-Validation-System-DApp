@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import axios from "axios";
+import toast from "react-hot-toast";
 import {
   ArrowDownTrayIcon,
   BuildingOfficeIcon,
@@ -33,7 +34,7 @@ const CertificateCard = ({ certificate }: { certificate: Certificate }) => {
   const handleShare = () => {
     if (certificate.certificateFileCID) {
       navigator.clipboard.writeText(`https://gateway.pinata.cloud/ipfs/${certificate.certificateFileCID}`);
-      alert("Link to certificate copied to clipboard!");
+      toast.success("Link to certificate copied to clipboard!");
     }
   };
 
@@ -85,7 +86,7 @@ const StudentPage = () => {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [authError, setAuthError] = useState("");
+  const [, setAuthError] = useState("");
   const [isAuthenticating, setIsAuthenticating] = useState(false);
   const [certificates, setCertificates] = useState<Certificate[]>([]);
   const [studentInfo, setStudentInfo] = useState<StudentInfo | null>(null);
@@ -111,12 +112,16 @@ const StudentPage = () => {
         setCertificates(res.data.certificates || []);
         setStudentInfo({ full_name: res.data.full_name, email: res.data.email });
         setAuthMode("dashboard");
+        toast.success("Logged in successfully");
       } else {
-        setAuthError(res.data?.message || "Login failed");
+        const msg = res.data?.message || "Login failed";
+        setAuthError(msg);
+        toast.error(msg);
       }
     } catch (err: any) {
       console.error(err);
       setAuthError(err?.response?.data?.message || "Server error. Try again.");
+      toast.error(err?.response?.data?.message || "Server error. Try again.");
     } finally {
       setIsAuthenticating(false);
     }
@@ -143,12 +148,16 @@ const StudentPage = () => {
         setCertificates(res.data.certificates || []);
         setStudentInfo({ full_name: res.data.full_name, email: res.data.email });
         setAuthMode("dashboard");
+        toast.success("Account created and logged in");
       } else {
-        setAuthError(res.data?.message || "Sign up failed");
+        const msg = res.data?.message || "Sign up failed";
+        setAuthError(msg);
+        toast.error(msg);
       }
     } catch (err: any) {
       console.error(err);
       setAuthError(err?.response?.data?.message || "Server error. Try again.");
+      toast.error(err?.response?.data?.message || "Server error. Try again.");
     } finally {
       setIsAuthenticating(false);
     }
@@ -244,7 +253,7 @@ const StudentPage = () => {
               />
             </div>
 
-            {authError && <div className="text-error text-sm mt-2">{authError}</div>}
+            {/* authError is shown via toast to avoid duplicate notifications */}
 
             <div className="card-actions flex-col mt-4">
               <button
