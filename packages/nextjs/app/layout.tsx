@@ -1,4 +1,5 @@
 import "@rainbow-me/rainbowkit/styles.css";
+import { Toaster } from "react-hot-toast";
 import { ScaffoldEthAppWithProviders } from "~~/components/ScaffoldEthAppWithProviders";
 import { ThemeProvider } from "~~/components/ThemeProvider";
 import "~~/styles/globals.css";
@@ -14,7 +15,21 @@ const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
     <html suppressHydrationWarning className={``}>
       <body>
         <ThemeProvider enableSystem>
-          <ScaffoldEthAppWithProviders>{children}</ScaffoldEthAppWithProviders>
+          <ScaffoldEthAppWithProviders>
+            {children}
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                // default options for all toasts
+                duration: 4000,
+                style: {
+                  borderRadius: "8px",
+                  padding: "12px 14px",
+                  fontSize: "14px",
+                },
+              }}
+            />
+          </ScaffoldEthAppWithProviders>
         </ThemeProvider>
       </body>
     </html>
