@@ -1,5 +1,6 @@
 import React from "react";
 import { HeartIcon } from "@heroicons/react/24/outline";
+import { SwitchTheme } from "~~/components/SwitchTheme";
 
 export const Footer = () => {
   return (
@@ -12,6 +13,7 @@ export const Footer = () => {
                 Built with <HeartIcon className="inline-block h-4 w-4" /> by KodaDev
               </p>
             </div>
+            <SwitchTheme className="pointer-events-auto" />
           </div>
         </ul>
       </div>

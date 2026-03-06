@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import mysql from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-// ❌ Hardcoded DB credentials for testing only
+// Hardcoded DB credentials for testing only
 const dbConfig = {
   host: "localhost",
   user: "root",
