@@ -79,24 +79,59 @@ const VerifierDashboard = () => {
           {verificationResult && (
             <div className="mt-4">
               {verificationResult === "approved" && verifiedCertificate && (
-                <div className="alert alert-success flex flex-col">
-                  <CheckCircleIcon className="h-6 w-6 mb-2" />
-                  <h3 className="font-bold">Verification Approved!</h3>
-                  <p>
-                    <b>Student:</b> {verifiedCertificate.full_name || verifiedCertificate.student_identifier}
-                  </p>
-                  <p>
-                    <b>Degree:</b> {verifiedCertificate.degree_name}
-                  </p>
-                  <p>
-                    <b>University:</b> {verifiedCertificate.university_name}
-                  </p>
-                  <p>
-                    <b>Graduation:</b> {verifiedCertificate.graduation_date}
-                  </p>
-                  <p className="text-xs text-gray-500">
+                <div className="alert alert-success flex flex-col items-start gap-2 shadow-inner">
+                  <div className="flex items-center gap-2">
+                    <CheckCircleIcon className="h-6 w-6 text-success" />
+                    <h3 className="font-bold text-lg">Verification Approved!</h3>
+                  </div>
+
+                  <div className="divider my-1 text-success opacity-20"></div>
+
+                  <div className="grid grid-cols-1 gap-1 text-sm w-full">
+                    <p>
+                      <b>Student:</b> {verifiedCertificate.full_name || verifiedCertificate.student_identifier}
+                    </p>
+                    <p>
+                      <b>Degree:</b> {verifiedCertificate.degree_name}
+                    </p>
+                    <p>
+                      <b>University:</b> {verifiedCertificate.university_name}
+                    </p>
+                    <p>
+                      <b>Graduation:</b> {verifiedCertificate.graduation_date}
+                    </p>
+                  </div>
+
+                  <div className="mt-4 p-3 bg-base-100 bg-opacity-50 rounded-lg w-full border border-success border-opacity-20">
+                    <div className="flex items-center gap-2 mb-2">
+                      <div
+                        className={`badge ${verifiedCertificate.blockchainVerified ? "badge-success" : "badge-warning"} badge-sm`}
+                      >
+                        {verifiedCertificate.blockchainVerified ? "ON-CHAIN VERIFIED" : "DB ONLY"}
+                      </div>
+                    </div>
+                    {verifiedCertificate.blockchainVerified ? (
+                      <div className="text-xs space-y-1">
+                        <p className="truncate">
+                          <b>Issuer Address:</b> <span className="opacity-70">{verifiedCertificate.issuerAddress}</span>
+                        </p>
+                        <p>
+                          <b>Anchored At:</b>{" "}
+                          <span className="opacity-70">
+                            {new Date(verifiedCertificate.anchoredAt * 1000).toLocaleString()}
+                          </span>
+                        </p>
+                      </div>
+                    ) : (
+                      <p className="text-xs italic opacity-70">
+                        This certificate is in our database but not yet anchored to the blockchain.
+                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-2 text-[10px] opacity-40 break-all w-full">
                     <b>IPFS CID:</b> {verifiedCertificate.ipfs_cid}
-                  </p>
+                  </div>
                 </div>
               )}
               {verificationResult === "invalid" && (

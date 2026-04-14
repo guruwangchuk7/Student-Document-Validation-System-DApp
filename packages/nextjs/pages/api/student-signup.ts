@@ -2,12 +2,12 @@ import bcrypt from "bcrypt";
 import mysql from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 
-// ❌ Hardcoded DB credentials for testing only
+// 🔒 Secure DB configuration using environment variables
 const dbConfig = {
-  host: "localhost",
-  user: "root",
-  password: "9099",
-  database: "student_certificates_db",
+  host: process.env.MYSQL_HOST || "localhost",
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE || "student_certificates_db",
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -19,6 +19,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     return res.status(400).json({ message: "All fields are required" });
 
   try {
+    if (!process.env.MYSQL_PASSWORD) {
+      throw new Error("MYSQL_PASSWORD environment variable is missing.");
+    }
     const conn = await mysql.createConnection(dbConfig);
 
     // Check if student exists

@@ -21,8 +21,6 @@ const UniversityAdmin = () => {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [studentIdentifier, setStudentIdentifier] = useState("");
 
-  const [, setStatus] = useState("");
-  const [, setError] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -61,9 +59,6 @@ const UniversityAdmin = () => {
   };
 
   const handleSubmit = async () => {
-    setError("");
-    setStatus("");
-
     if (
       !certificateIdInput ||
       !studentFullName ||
@@ -72,7 +67,7 @@ const UniversityAdmin = () => {
       !selectedFile ||
       !studentIdentifier
     ) {
-      setError("Please fill out all required fields.");
+      toast.error("Please fill out all required fields.");
       return;
     }
 
@@ -95,8 +90,9 @@ const UniversityAdmin = () => {
 
       if (!res.ok) throw new Error(data.error || "Unknown error");
 
-      setStatus("Certificate issued successfully!");
       toast.success("Certificate issued successfully");
+
+      // Reset form
       setCertificateIdInput("");
       setStudentFullName("");
       setGender("");
@@ -108,7 +104,6 @@ const UniversityAdmin = () => {
       setSelectedFile(null);
       if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (err: any) {
-      setError(err.message);
       toast.error(err.message || "Failed to issue certificate");
     } finally {
       setIsSubmitting(false);
@@ -286,7 +281,6 @@ const UniversityAdmin = () => {
               {isSubmitting ? "Processing..." : "Issue Certificate"}
             </button>
           </div>
-          {/* errors and status are shown via toast to avoid duplicate notifications */}
         </div>
       </div>
     </div>

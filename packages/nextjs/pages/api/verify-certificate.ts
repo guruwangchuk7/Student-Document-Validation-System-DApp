@@ -1,8 +1,11 @@
+import deployedContracts from "../../contracts/deployedContracts";
 import crypto from "crypto";
 import formidable, { Fields, File as FormidableFile } from "formidable";
 import fs from "fs";
 import mysql from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
+import { createPublicClient, http } from "viem";
+import { hardhat } from "viem/chains";
 
 export const config = { api: { bodyParser: false } };
 
@@ -20,6 +23,14 @@ function firstFile(files: formidable.Files, key: string): FormidableFile | undef
   if (Array.isArray(arr) && arr.length > 0) return arr[0];
   return undefined;
 }
+
+// ⛓️ Blockchain Config (Read-only for verification)
+const publicClient = createPublicClient({
+  chain: hardhat, // Update this for production (e.g., base, optimism)
+  transport: http(),
+});
+
+const contractConfig = (deployedContracts as any)[hardhat.id].CertificateRegistry;
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
@@ -52,7 +63,33 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const certificate = (rows as any[])[0];
 
-    return res.status(200).json({ verified: true, data: certificate });
+    // --- 🔨 NEW: Blockchain Check ---
+    console.log("Checking blockchain for hash:", certificateHash);
+    const hashAsBytes32 = `0x${certificateHash}` as `0x${string}`;
+
+    let isBlockchainVerified = false;
+    let issuer = null;
+    let timestamp = null;
+
+    try {
+      const result: any = await publicClient.readContract({
+        address: contractConfig.address,
+        abi: contractConfig.abi,
+        functionName: "verifyCertificate",
+        args: [hashAsBytes32],
+      });
+      [isBlockchainVerified, issuer, timestamp] = result;
+    } catch (bcError: any) {
+      console.error("Blockchain verification check failed:", bcError.message);
+    }
+
+    return res.status(200).json({
+      verified: true,
+      blockchainVerified: isBlockchainVerified,
+      issuerAddress: issuer,
+      anchoredAt: timestamp ? Number(timestamp) : null,
+      data: certificate,
+    });
   } catch (err: any) {
     console.error("Verification API error:", err);
     return res.status(500).json({ verified: false, message: "Server error during verification." });

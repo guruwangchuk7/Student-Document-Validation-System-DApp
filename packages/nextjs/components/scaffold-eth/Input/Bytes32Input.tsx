@@ -1,6 +1,7 @@
 import { useCallback } from "react";
+import { InputBase } from "./InputBase";
+import { CommonInputProps } from "./utils";
 import { hexToString, isHex, stringToHex } from "viem";
-import { CommonInputProps, InputBase } from "~~/components/scaffold-eth";
 
 export const Bytes32Input = ({ value, onChange, name, placeholder, disabled }: CommonInputProps) => {
   const convertStringToBytes32 = useCallback(() => {

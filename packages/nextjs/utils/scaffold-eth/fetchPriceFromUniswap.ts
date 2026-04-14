@@ -5,7 +5,12 @@ import { Address, createPublicClient, fallback, http, parseAbi } from "viem";
 import { mainnet } from "viem/chains";
 
 const alchemyHttpUrl = getAlchemyHttpUrl(mainnet.id);
-const rpcFallbacks = alchemyHttpUrl ? [http(alchemyHttpUrl), http()] : [http()];
+const rpcFallbacks = [
+  alchemyHttpUrl ? http(alchemyHttpUrl) : null,
+  http("https://cloudflare-eth.com"),
+  http("https://eth.drpc.org"),
+  http("https://rpc.ankr.com/eth"),
+].filter(Boolean) as any[];
 const publicClient = createPublicClient({
   chain: mainnet,
   transport: fallback(rpcFallbacks),
@@ -39,25 +44,20 @@ export const fetchPriceFromUniswap = async (targetNetwork: ChainWithAttributes):
       abi: ABI,
     };
 
-    const reserves = await publicClient.readContract({
-      ...wagmiConfig,
-      functionName: "getReserves",
+    const [reserves, token0Address, token1Address] = await publicClient.multicall({
+      contracts: [
+        { ...wagmiConfig, functionName: "getReserves" },
+        { ...wagmiConfig, functionName: "token0" },
+        { ...wagmiConfig, functionName: "token1" },
+      ],
+      allowFailure: false,
     });
 
-    const token0Address = await publicClient.readContract({
-      ...wagmiConfig,
-      functionName: "token0",
-    });
-
-    const token1Address = await publicClient.readContract({
-      ...wagmiConfig,
-      functionName: "token1",
-    });
-    const token0 = [TOKEN, DAI].find(token => token.address === token0Address) as Token;
-    const token1 = [TOKEN, DAI].find(token => token.address === token1Address) as Token;
+    const token0 = [TOKEN, DAI].find(token => token.address === (token0Address as string)) as Token;
+    const token1 = [TOKEN, DAI].find(token => token.address === (token1Address as string)) as Token;
     const pair = new Pair(
-      CurrencyAmount.fromRawAmount(token0, reserves[0].toString()),
-      CurrencyAmount.fromRawAmount(token1, reserves[1].toString()),
+      CurrencyAmount.fromRawAmount(token0, (reserves as any)[0].toString()),
+      CurrencyAmount.fromRawAmount(token1, (reserves as any)[1].toString()),
     );
     const route = new Route([pair], TOKEN, DAI);
     const price = parseFloat(route.midPrice.toSignificant(6));

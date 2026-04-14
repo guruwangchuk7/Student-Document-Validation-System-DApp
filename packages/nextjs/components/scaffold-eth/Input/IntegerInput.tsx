@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
+import { InputBase } from "./InputBase";
+import { CommonInputProps, IntegerVariant, isValidInteger } from "./utils";
 import { parseEther } from "viem";
-import { CommonInputProps, InputBase, IntegerVariant, isValidInteger } from "~~/components/scaffold-eth";
 
 type IntegerInputProps = CommonInputProps<string> & {
   variant?: IntegerVariant;
