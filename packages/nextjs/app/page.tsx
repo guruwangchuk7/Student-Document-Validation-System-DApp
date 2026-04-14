@@ -1,10 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import type { NextPage } from "next";
 import { BuildingLibraryIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
 
-const Home: NextPage = () => {
+export default function Home() {
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
@@ -63,6 +60,4 @@ const Home: NextPage = () => {
       </div>
     </>
   );
-};
-
-export default Home;
+}

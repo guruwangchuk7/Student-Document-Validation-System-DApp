@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import axios from "axios";
 import { CheckCircleIcon, DocumentMagnifyingGlassIcon, XCircleIcon } from "@heroicons/react/24/outline";
 
 const VerifierDashboard = () => {
@@ -32,22 +31,24 @@ const VerifierDashboard = () => {
       const formData = new FormData();
       formData.append("file", selectedFile);
 
-      const res = await axios.post("/api/verify-certificate", formData, {
-        headers: { "Content-Type": "multipart/form-data" },
-        timeout: 30000,
+      const res = await fetch("/api/verify-certificate", {
+        method: "POST",
+        body: formData,
       });
 
-      if (res.data?.verified) {
+      const data = await res.json();
+
+      if (res.ok && data?.verified) {
         setVerificationResult("approved");
-        setVerifiedCertificate(res.data.data);
+        setVerifiedCertificate(data.data);
       } else {
         setVerificationResult("invalid");
-        setVerifyErrorMsg(res.data?.message ?? "Verification failed");
+        setVerifyErrorMsg(data?.message ?? "Verification failed");
       }
     } catch (err: any) {
       console.error("Verify error:", err);
       setVerificationResult("invalid");
-      setVerifyErrorMsg(err?.response?.data?.message ?? "Server error during verification");
+      setVerifyErrorMsg(err?.message ?? "Server error during verification");
     } finally {
       setIsVerifying(false);
     }

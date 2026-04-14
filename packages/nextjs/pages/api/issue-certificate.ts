@@ -12,15 +12,16 @@ import { hardhat } from "viem/chains";
 // Disable default body parser
 export const config = { api: { bodyParser: false } };
 
+// 🔒 DB configuration
+const dbConfig = {
+  host: process.env.MYSQL_HOST || "localhost",
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE || "student_certificates_db",
+};
+
 // Initialize Pinata
 const pinata = new PinataSDK(process.env.PINATA_API_KEY!, process.env.PINATA_SECRET_KEY!);
-
-const dbConfig = {
-  host: process.env.MYSQL_HOST!,
-  user: process.env.MYSQL_USER!,
-  password: process.env.MYSQL_PASSWORD!,
-  database: process.env.MYSQL_DATABASE!,
-};
 
 // ⛓️ Blockchain Config
 const PRIVATE_KEY = (process.env.ISSUER_PRIVATE_KEY ||
@@ -29,7 +30,7 @@ const issuerAccount = privateKeyToAccount(PRIVATE_KEY);
 
 const walletClient = createWalletClient({
   account: issuerAccount,
-  chain: hardhat, // Update this to match your target network
+  chain: hardhat,
   transport: http(),
 }).extend(publicActions);
 
@@ -43,35 +44,22 @@ const parseForm = (req: NextApiRequest) =>
       maxFileSize: 5 * 1024 * 1024,
     });
 
-    form.on("file", (name: string, file: formidable.File) => {
-      console.log("Received file:", name, file.originalFilename);
-    });
-
     form.parse(req, (err: any, fields: formidable.Fields, files: formidable.Files) => {
-      if (err) {
-        console.error("Formidable error:", err);
-        reject(err);
-      } else resolve({ fields, files });
+      if (err) reject(err);
+      else resolve({ fields, files });
     });
   });
 
-// Helper to convert string|string[]|undefined to string
 const toString = (val: string | string[] | undefined) => (Array.isArray(val) ? val[0] : (val ?? ""));
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== "POST") {
-    return res.status(405).json({ error: "Method not allowed" });
-  }
+  if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
 
   try {
     const { fields, files } = await parseForm(req);
-    console.log("Formidable files object:", files);
 
     // Extract fields
     const certificateId = toString(fields.certificateId);
-    const studentFullName = toString(fields.studentFullName);
-    const gender = toString(fields.gender);
-    const dateOfBirth = toString(fields.dateOfBirth);
     const degreeName = toString(fields.degreeName);
     const graduationDate = toString(fields.graduationDate);
     const universityName = toString(fields.universityName);
@@ -81,66 +69,59 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const fileArray = files.file as formidable.File[] | formidable.File | undefined;
     const file = Array.isArray(fileArray) ? fileArray[0] : fileArray;
 
-    if (!file || !file.filepath) {
-      return res.status(400).json({ error: "No file uploaded" });
-    }
+    if (!file || !file.filepath) return res.status(400).json({ error: "No file uploaded" });
 
-    // --- NEW: Generate SHA256 hash of the file ---
+    // Generate SHA256 hash
     const fileBuffer = fs.readFileSync(file.filepath);
     const certificateHash = crypto.createHash("sha256").update(fileBuffer).digest("hex");
+    const hashAsBytes32 = `0x${certificateHash}` as `0x${string}`;
 
-    // Create readable stream for Pinata
-    const readableStream = fs.createReadStream(file.filepath);
-
-    // Upload to Pinata
-    const pinataResult = await pinata.pinFileToIPFS(readableStream, {
-      pinataMetadata: {
-        name: certificateId,
-        keyvalues: {
-          student: studentFullName,
-          degree: degreeName,
-        } as any,
-      },
-    });
+    // 1. Upload to Pinata and 2. Anchor on-chain in parallel
+    const [pinataResult, txHash] = await Promise.all([
+      pinata.pinFileToIPFS(fs.createReadStream(file.filepath), {
+        pinataMetadata: { name: certificateId },
+      }),
+      (async () => {
+        try {
+          return await walletClient.writeContract({
+            address: contractConfig.address,
+            abi: contractConfig.abi,
+            functionName: "registerCertificate",
+            args: [hashAsBytes32],
+          });
+        } catch (bcError: any) {
+          console.error("Blockchain anchoring failed:", bcError.message);
+          return "FAILED";
+        }
+      })(),
+    ]);
 
     const ipfsCID = pinataResult.IpfsHash;
 
-    // --- 🔨 NEW: Anchor on-chain (Web 2.5 Trust Layer) ---
-    console.log("Anchoring hash on-chain:", certificateHash);
-    const hashAsBytes32 = `0x${certificateHash}` as `0x${string}`;
-
-    let txHash = null;
-    try {
-      txHash = await walletClient.writeContract({
-        address: contractConfig.address,
-        abi: contractConfig.abi,
-        functionName: "registerCertificate",
-        args: [hashAsBytes32],
-      });
-      console.log("Blockchain transaction hash:", txHash);
-    } catch (bcError: any) {
-      console.error("Blockchain anchoring failed:", bcError.message);
-    }
-
-    // Insert into MySQL (add certificate_hash)
+    // 3. Save to MySQL (Primary source for student portal)
     const conn = await mysql.createConnection(dbConfig);
-    await conn.execute(
-      `INSERT INTO certificates 
-      (certificate_id, student_identifier, degree_name, university_name, graduation_date, ipfs_cid, issue_date, gender, date_of_birth, certificate_hash) 
-      VALUES (?, ?, ?, ?, ?, ?, NOW(), ?, ?, ?)`,
-      [
-        certificateId,
-        studentIdentifier,
-        degreeName,
-        universityName,
-        graduationDate || null,
-        ipfsCID,
-        gender,
-        dateOfBirth || null,
-        certificateHash,
-      ],
-    );
-    await conn.end();
+    try {
+      await conn.execute(
+        `INSERT INTO certificates 
+         (certificate_id, student_identifier, degree_name, university_name, graduation_date, ipfs_cid, certificate_hash) 
+         VALUES (?, ?, ?, ?, ?, ?, ?)`,
+        [
+          certificateId,
+          studentIdentifier,
+          degreeName,
+          universityName,
+          graduationDate || null,
+          ipfsCID,
+          certificateHash,
+        ],
+      );
+    } catch (dbErr: any) {
+      console.error("MySQL Insert Error:", dbErr.message);
+      // Check if columns exist or table exists
+      throw new Error("Local Database storage failed: " + dbErr.message);
+    } finally {
+      await conn.end();
+    }
 
     return res.status(200).json({ success: true, ipfsCID, txHash });
   } catch (error: any) {

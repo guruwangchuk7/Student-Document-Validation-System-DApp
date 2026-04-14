@@ -9,6 +9,14 @@ import { hardhat } from "viem/chains";
 
 export const config = { api: { bodyParser: false } };
 
+// 🔒 DB configuration
+const dbConfig = {
+  host: process.env.MYSQL_HOST || "localhost",
+  user: process.env.MYSQL_USER || "root",
+  password: process.env.MYSQL_PASSWORD,
+  database: process.env.MYSQL_DATABASE || "student_certificates_db",
+};
+
 const hashFile = (filePath: string): Promise<string> =>
   new Promise((resolve, reject) => {
     const hash = crypto.createHash("sha256");
@@ -24,9 +32,8 @@ function firstFile(files: formidable.Files, key: string): FormidableFile | undef
   return undefined;
 }
 
-// ⛓️ Blockchain Config (Read-only for verification)
 const publicClient = createPublicClient({
-  chain: hardhat, // Update this for production (e.g., base, optimism)
+  chain: hardhat,
   transport: http(),
 });
 
@@ -34,14 +41,6 @@ const contractConfig = (deployedContracts as any)[hardhat.id].CertificateRegistr
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== "POST") return res.status(405).json({ error: "Method not allowed" });
-
-  const db = await mysql.createConnection({
-    host: process.env.MYSQL_HOST,
-    port: parseInt(process.env.MYSQL_PORT || "3306"),
-    user: process.env.MYSQL_USER,
-    password: process.env.MYSQL_PASSWORD,
-    database: process.env.MYSQL_DATABASE,
-  });
 
   try {
     const form = formidable({ multiples: false, keepExtensions: true, maxFileSize: 50 * 1024 * 1024 });
@@ -53,47 +52,61 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!certificateFile) return res.status(400).json({ verified: false, message: "Certificate file is required." });
 
     const certificateHash = await hashFile(certificateFile.filepath);
-
-    // Check in DB
-    const [rows] = await db.query("SELECT * FROM certificates WHERE certificate_hash = ? LIMIT 1", [certificateHash]);
-
-    if ((rows as any[]).length === 0) {
-      return res.status(200).json({ verified: false, message: "Certificate not found in registry." });
-    }
-
-    const certificate = (rows as any[])[0];
-
-    // --- 🔨 NEW: Blockchain Check ---
-    console.log("Checking blockchain for hash:", certificateHash);
     const hashAsBytes32 = `0x${certificateHash}` as `0x${string}`;
 
-    let isBlockchainVerified = false;
-    let issuer = null;
-    let timestamp = null;
+    // Perform MySQL lookup and Blockchain verification in parallel
+    const [dbResult, blockchainResult] = await Promise.all([
+      (async () => {
+        const conn = await mysql.createConnection(dbConfig);
+        try {
+          const [rows]: any = await conn.execute("SELECT * FROM certificates WHERE certificate_hash = ?", [
+            certificateHash,
+          ]);
+          return rows;
+        } finally {
+          await conn.end();
+        }
+      })(),
+      (async () => {
+        try {
+          return await publicClient.readContract({
+            address: contractConfig.address,
+            abi: contractConfig.abi,
+            functionName: "verifyCertificate",
+            args: [hashAsBytes32],
+          });
+        } catch (bcError: any) {
+          console.error("Blockchain verification check failed:", bcError.message);
+          return [false, "0x0000000000000000000000000000000000000000", 0n];
+        }
+      })(),
+    ]);
 
-    try {
-      const result: any = await publicClient.readContract({
-        address: contractConfig.address,
-        abi: contractConfig.abi,
-        functionName: "verifyCertificate",
-        args: [hashAsBytes32],
-      });
-      [isBlockchainVerified, issuer, timestamp] = result;
-    } catch (bcError: any) {
-      console.error("Blockchain verification check failed:", bcError.message);
+    const certificates = dbResult;
+    const [isBlockchainVerified, issuer, timestamp] = blockchainResult as any;
+
+    if (!certificates || certificates.length === 0) {
+      return res.status(200).json({ verified: false, message: "Certificate not found in local database registry." });
     }
+
+    const certificate = certificates[0];
 
     return res.status(200).json({
       verified: true,
       blockchainVerified: isBlockchainVerified,
       issuerAddress: issuer,
       anchoredAt: timestamp ? Number(timestamp) : null,
-      data: certificate,
+      data: {
+        certificateId: certificate.certificate_id,
+        studentIdentifier: certificate.student_identifier,
+        degreeName: certificate.degree_name,
+        universityName: certificate.university_name,
+        graduationDate: certificate.graduation_date,
+        ipfsCID: certificate.ipfs_cid,
+      },
     });
   } catch (err: any) {
     console.error("Verification API error:", err);
-    return res.status(500).json({ verified: false, message: "Server error during verification." });
-  } finally {
-    await db.end();
+    return res.status(500).json({ verified: false, message: "Server error: " + err.message });
   }
 }

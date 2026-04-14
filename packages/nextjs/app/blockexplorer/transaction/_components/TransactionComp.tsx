@@ -22,8 +22,10 @@ const TransactionComp = ({ txHash }: { txHash: Hash }) => {
   useEffect(() => {
     if (txHash && client) {
       const fetchTransaction = async () => {
-        const tx = await client.getTransaction({ hash: txHash });
-        const receipt = await client.getTransactionReceipt({ hash: txHash });
+        const [tx, receipt] = await Promise.all([
+          client.getTransaction({ hash: txHash }),
+          client.getTransactionReceipt({ hash: txHash }),
+        ]);
 
         const transactionWithDecodedData = decodeTransactionData(tx);
         setTransaction(transactionWithDecodedData);

@@ -14,12 +14,12 @@ export const Header = () => {
             <AcademicCapIcon className="h-8 w-8 text-primary" />
           </div>
           <div className="flex flex-col">
-            <span className="font-bold leading-tight">Certificate DApp</span>
-            <span className="text-xs">Student Certificate Validation</span>
+            <span className="font-bold leading-tight">BlockCertify</span>
+            <span className="text-xs">Blockchain Certificate Registry</span>
           </div>
         </Link>
       </div>
-      <div className="navbar-end flex-grow mr-4">
+      <div className="navbar-end flex-grow gap-2 mr-4">
         <RainbowKitCustomConnectButton />
       </div>
     </div>
