@@ -142,7 +142,6 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
     }
   };
 
-
   // AUTHENTICATION & ACCESS CONTROL UI
   if (!user || !isAdmin) {
     return (

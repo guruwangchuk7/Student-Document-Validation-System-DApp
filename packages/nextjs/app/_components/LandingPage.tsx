@@ -1,19 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { SwitchTheme } from "~~/components/SwitchTheme";
 import {
+  ArrowPathIcon,
   BuildingLibraryIcon,
-  MagnifyingGlassIcon,
-  UserIcon,
-  ShieldCheckIcon,
+  ChatBubbleLeftRightIcon,
   CpuChipIcon,
   DocumentCheckIcon,
-  UserGroupIcon,
   EnvelopeIcon,
-  ChatBubbleLeftRightIcon,
-  ArrowPathIcon
+  MagnifyingGlassIcon,
+  ShieldCheckIcon,
+  UserGroupIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
+import { SwitchTheme } from "~~/components/SwitchTheme";
 
 interface LandingPageProps {
   onAccess: () => void;
@@ -22,7 +22,6 @@ interface LandingPageProps {
 export const LandingPage = ({ onAccess }: LandingPageProps) => {
   return (
     <div className="min-h-screen bg-gradient-to-b from-[#B6D6F4] via-[#F0F7FF] to-white overflow-x-hidden selection:bg-primary selection:text-white scroll-smooth">
-
       {/* --- HEADER --- */}
       <header className="fixed top-8 left-0 w-full z-50 px-4 md:px-12 flex justify-center">
         <nav className="w-full max-w-7xl flex items-center justify-between bg-white/10 backdrop-blur-xl border border-white/20 p-4 rounded-3xl shadow-sm">
@@ -35,8 +34,14 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
 
           <div className="flex items-center gap-6 md:gap-10">
             <div className="hidden lg:flex items-center gap-8">
-              {["Features", "Benefits", "Security", "Process", "Team", "Contact"].map((item) => (
-                <a key={item} href={`#${item.toLowerCase()}`} className="text-sm font-bold text-slate-600 hover:text-black transition-colors">{item}</a>
+              {["Features", "Benefits", "Security", "Process", "Team", "Contact"].map(item => (
+                <a
+                  key={item}
+                  href={`#${item.toLowerCase()}`}
+                  className="text-sm font-bold text-slate-600 hover:text-black transition-colors"
+                >
+                  {item}
+                </a>
               ))}
             </div>
 
@@ -65,7 +70,8 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
           </h1>
 
           <p className="text-lg md:text-xl text-slate-500 max-w-2xl mx-auto mb-12 font-medium leading-relaxed opacity-80">
-            An all-in-one blockchain platform for issuing and validating academic achievements with absolute transparency and zero fraud.
+            An all-in-one blockchain platform for issuing and validating academic achievements with absolute
+            transparency and zero fraud.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-5 justify-center">
@@ -75,7 +81,10 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
             >
               Enter Platform
             </button>
-            <a href="#features" className="px-12 py-5 bg-white/50 backdrop-blur-md text-slate-700 rounded-full font-bold text-lg hover:bg-white transition-all border border-white/20">
+            <a
+              href="#features"
+              className="px-12 py-5 bg-white/50 backdrop-blur-md text-slate-700 rounded-full font-bold text-lg hover:bg-white transition-all border border-white/20"
+            >
               See features
             </a>
           </div>
@@ -91,9 +100,13 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
                   <BuildingLibraryIcon className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-3">University</h3>
-                <p className="text-xs text-slate-400 mb-8 max-w-[180px]">Securely issue and anchor certifications on-chain.</p>
+                <p className="text-xs text-slate-400 mb-8 max-w-[180px]">
+                  Securely issue and anchor certifications on-chain.
+                </p>
                 <div className="mt-auto flex gap-1">
-                  {[1, 2, 3].map(i => <div key={i} className="w-8 h-1 bg-slate-200 rounded-full"></div>)}
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="w-8 h-1 bg-slate-200 rounded-full"></div>
+                  ))}
                 </div>
               </div>
 
@@ -103,9 +116,13 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
                   <MagnifyingGlassIcon className="h-8 w-8 text-accent" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-3">Company</h3>
-                <p className="text-xs text-slate-400 mb-8 max-w-[180px]">Validate documents instantly with hash matching.</p>
+                <p className="text-xs text-slate-400 mb-8 max-w-[180px]">
+                  Validate documents instantly with hash matching.
+                </p>
                 <div className="mt-auto flex gap-1">
-                  {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-8 h-1 bg-primary/20 rounded-full"></div>)}
+                  {[1, 2, 3, 4, 5].map(i => (
+                    <div key={i} className="w-8 h-1 bg-primary/20 rounded-full"></div>
+                  ))}
                 </div>
               </div>
 
@@ -115,9 +132,13 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
                   <UserIcon className="h-8 w-8 text-primary" />
                 </div>
                 <h3 className="text-xl font-bold text-slate-800 mb-3">Student</h3>
-                <p className="text-xs text-slate-400 mb-8 max-w-[180px]">Access and share your verified career records.</p>
+                <p className="text-xs text-slate-400 mb-8 max-w-[180px]">
+                  Access and share your verified career records.
+                </p>
                 <div className="mt-auto flex gap-1">
-                  {[1, 2, 3].map(i => <div key={i} className="w-8 h-1 bg-slate-200 rounded-full"></div>)}
+                  {[1, 2, 3].map(i => (
+                    <div key={i} className="w-8 h-1 bg-slate-200 rounded-full"></div>
+                  ))}
                 </div>
               </div>
             </div>
@@ -131,7 +152,9 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
       <section id="features" className="py-32 bg-white px-4">
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-24">
-            <span className="text-xs font-black uppercase tracking-[0.4em] text-primary/50 mb-4 block">Capabilities</span>
+            <span className="text-xs font-black uppercase tracking-[0.4em] text-primary/50 mb-4 block">
+              Capabilities
+            </span>
             <h2 className="text-5xl font-bold text-slate-900 tracking-tight">Enterprise-Grade Features</h2>
           </div>
 
@@ -142,24 +165,39 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
             </div>
             <div className="space-y-10">
               <div className="flex gap-6">
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0"><DocumentCheckIcon className="w-6 h-6 text-primary" /></div>
+                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <DocumentCheckIcon className="w-6 h-6 text-primary" />
+                </div>
                 <div>
                   <h4 className="text-xl font-bold text-slate-800 mb-2">Immutable Anchoring</h4>
-                  <p className="text-slate-500 leading-relaxed">Every certificate is crytographically hashed and stored on the blockchain, creating a permanent, unalterable record.</p>
+                  <p className="text-slate-500 leading-relaxed">
+                    Every certificate is crytographically hashed and stored on the blockchain, creating a permanent,
+                    unalterable record.
+                  </p>
                 </div>
               </div>
               <div className="flex gap-6">
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0"><MagnifyingGlassIcon className="w-6 h-6 text-primary" /></div>
+                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <MagnifyingGlassIcon className="w-6 h-6 text-primary" />
+                </div>
                 <div>
                   <h4 className="text-xl font-bold text-slate-800 mb-2">1-Click Verification</h4>
-                  <p className="text-slate-500 leading-relaxed">Employers can verify authenticity instantly by dragging and dropping a file. Our engine does the rest in milliseconds.</p>
+                  <p className="text-slate-500 leading-relaxed">
+                    Employers can verify authenticity instantly by dragging and dropping a file. Our engine does the
+                    rest in milliseconds.
+                  </p>
                 </div>
               </div>
               <div className="flex gap-6">
-                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0"><ShieldCheckIcon className="w-6 h-6 text-primary" /></div>
+                <div className="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center flex-shrink-0">
+                  <ShieldCheckIcon className="w-6 h-6 text-primary" />
+                </div>
                 <div>
                   <h4 className="text-xl font-bold text-slate-800 mb-2">Decentralized Storage</h4>
-                  <p className="text-slate-500 leading-relaxed">Documents are pinned to IPFS, ensuring your data lives as long as the internet does, with no single point of failure.</p>
+                  <p className="text-slate-500 leading-relaxed">
+                    Documents are pinned to IPFS, ensuring your data lives as long as the internet does, with no single
+                    point of failure.
+                  </p>
                 </div>
               </div>
             </div>
@@ -172,14 +210,28 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
         <div className="container mx-auto max-w-6xl">
           <div className="text-center mb-24">
             <h2 className="text-5xl font-bold text-slate-900 tracking-tight mb-6">Built for Absolute Trust</h2>
-            <p className="text-lg text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">Why the world's leading academic institutions choose BlockCertify to protect their reputation.</p>
+            <p className="text-lg text-slate-400 max-w-2xl mx-auto font-medium leading-relaxed">
+              Why the world's leading academic institutions choose BlockCertify to protect their reputation.
+            </p>
           </div>
 
           <div className="grid md:grid-cols-3 gap-8 text-center">
             {[
-              { title: "Zero Fraud", desc: "Forgeries become impossible. Every claim is backed by a cryptographic proof on the public ledger.", icon: ShieldCheckIcon },
-              { title: "Cost Efficiency", desc: "Reduce administrative overhead by 90% by eliminating manual verification calls and emails.", icon: UserGroupIcon },
-              { title: "Global Portability", desc: "A universal standard that works everywhere. Students can take their verified records across borders effortlessly.", icon: ArrowPathIcon }
+              {
+                title: "Zero Fraud",
+                desc: "Forgeries become impossible. Every claim is backed by a cryptographic proof on the public ledger.",
+                icon: ShieldCheckIcon,
+              },
+              {
+                title: "Cost Efficiency",
+                desc: "Reduce administrative overhead by 90% by eliminating manual verification calls and emails.",
+                icon: UserGroupIcon,
+              },
+              {
+                title: "Global Portability",
+                desc: "A universal standard that works everywhere. Students can take their verified records across borders effortlessly.",
+                icon: ArrowPathIcon,
+              },
             ].map((benefit, i) => (
               <div key={i} className="p-10 bg-white rounded-[2.5rem] border border-slate-100 shadow-sm">
                 <div className="w-16 h-16 bg-blue-50 rounded-2xl flex items-center justify-center text-primary mx-auto mb-8">
@@ -199,10 +251,20 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
           <div className="grid md:grid-cols-2 gap-16 items-center">
             <div className="space-y-8">
               <span className="text-xs font-bold text-primary tracking-[0.4em] uppercase">Core Security</span>
-              <h2 className="text-5xl font-black leading-tight">Your data. Protected by <span className="text-primary italic">Math</span>.</h2>
-              <p className="text-lg text-slate-400 leading-relaxed">We utilize industry-standard SHA-256 hashing and the Ethereum blockchain to ensure that certifications are mathematically verifiable and impossible to hijack.</p>
+              <h2 className="text-5xl font-black leading-tight">
+                Your data. Protected by <span className="text-primary italic">Math</span>.
+              </h2>
+              <p className="text-lg text-slate-400 leading-relaxed">
+                We utilize industry-standard SHA-256 hashing and the Ethereum blockchain to ensure that certifications
+                are mathematically verifiable and impossible to hijack.
+              </p>
               <div className="space-y-4">
-                {["End-to-End Cryptographic Pushing", "AES-256 Encrypted Private Metadata", "On-Chain Transaction Logging", "Distributed IPFS Content Routing"].map((item, i) => (
+                {[
+                  "End-to-End Cryptographic Pushing",
+                  "AES-256 Encrypted Private Metadata",
+                  "On-Chain Transaction Logging",
+                  "Distributed IPFS Content Routing",
+                ].map((item, i) => (
                   <div key={i} className="flex items-center gap-3 text-sm font-bold text-slate-200">
                     <div className="w-1.5 h-1.5 rounded-full bg-primary ring-4 ring-primary/20"></div> {item}
                   </div>
@@ -213,7 +275,11 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
               <div className="absolute -top-24 -right-24 w-64 h-64 bg-primary/20 blur-[100px] rounded-full group-hover:bg-primary/30 transition-colors"></div>
               <div className="flex flex-col gap-6 relative z-10">
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="h-16 w-full bg-white/5 rounded-2xl border border-white/5 flex items-center gap-4 px-6 opacity-30 group-hover:opacity-100 transition-opacity" style={{ transitionDelay: `${i * 100}ms` }}>
+                  <div
+                    key={i}
+                    className="h-16 w-full bg-white/5 rounded-2xl border border-white/5 flex items-center gap-4 px-6 opacity-30 group-hover:opacity-100 transition-opacity"
+                    style={{ transitionDelay: `${i * 100}ms` }}
+                  >
                     <div className="w-8 h-8 rounded-lg bg-white/10"></div>
                     <div className="w-2/3 h-2 bg-white/10 rounded-full"></div>
                   </div>
@@ -231,12 +297,18 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
           <div className="space-y-12 relative">
             <div className="absolute left-[30px] md:left-1/2 top-0 bottom-0 w-px bg-slate-100 -translate-x-1/2 hidden md:block"></div>
             {[
-              { title: "Issuance", desc: "The University hashes the document and sends a transaction to the blockchain." },
+              {
+                title: "Issuance",
+                desc: "The University hashes the document and sends a transaction to the blockchain.",
+              },
               { title: "Storage", desc: "The original file is pinned to IPFS for global, permanent accessibility." },
               { title: "Upload", desc: "The verifier receives the PDF and uploads it through our secure gateway." },
-              { title: "Validation", desc: "Our engine compares the file hash with the on-chain record in real-time." }
+              { title: "Validation", desc: "Our engine compares the file hash with the on-chain record in real-time." },
             ].map((item, i) => (
-              <div key={item.title} className={`flex flex-col md:flex-row items-center gap-8 relative z-10 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'}`}>
+              <div
+                key={item.title}
+                className={`flex flex-col md:flex-row items-center gap-8 relative z-10 ${i % 2 === 0 ? "md:flex-row" : "md:flex-row-reverse"}`}
+              >
                 <div className="md:w-1/2 md:px-12">
                   <h4 className="text-2xl font-bold text-slate-800 mb-2">{item.title}</h4>
                   <p className="text-sm text-slate-400 font-medium leading-relaxed">{item.desc}</p>
@@ -264,7 +336,9 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
                 <UserIcon className="w-12 h-12" />
               </div>
               <h3 className="text-2xl font-bold text-slate-800 mb-2">Guru Wangchuk</h3>
-              <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">CEO & Full Stack Engineer</p>
+              <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">
+                CEO & Full Stack Engineer
+              </p>
               <div className="space-y-2 text-sm text-slate-500 font-bold border-t border-slate-50 pt-6">
                 <p className="opacity-60">Full stack engineer at Saidpiece</p>
                 <p>Startup owner of Kodadev</p>
@@ -277,7 +351,9 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
                 <MagnifyingGlassIcon className="w-12 h-12" />
               </div>
               <h3 className="text-2xl font-bold text-slate-800 mb-2">Lhawang Jamtsho</h3>
-              <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">Frontend developer and QA tester</p>
+              <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">
+                Frontend developer and QA tester
+              </p>
               <div className="space-y-2 text-sm text-slate-500 font-bold border-t border-slate-50 pt-6">
                 <p className="opacity-60">Quality Assurance Lead</p>
                 <p>UI Implementation</p>
@@ -290,7 +366,9 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
                 <ShieldCheckIcon className="w-12 h-12" />
               </div>
               <h3 className="text-2xl font-bold text-slate-800 mb-2">Sangagy Rinchen</h3>
-              <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">Frontend developer and security tester</p>
+              <p className="text-xs font-black uppercase tracking-widest text-primary mb-6">
+                Frontend developer and security tester
+              </p>
               <div className="space-y-2 text-sm text-slate-500 font-bold border-t border-slate-50 pt-6">
                 <p className="opacity-60">Security Audit Researcher</p>
                 <p>Vulnerability testing</p>
@@ -307,10 +385,15 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
             <div className="absolute top-0 right-0 w-96 h-96 bg-primary/10 blur-[100px] -translate-y-1/2 translate-x-1/2"></div>
             <div className="relative z-10 max-w-3xl mx-auto">
               <h2 className="text-5xl md:text-7xl font-bold text-white mb-8 tracking-tight">Let's talk trust.</h2>
-              <p className="text-xl text-slate-400 mb-12">Whether you're a university looking to modernize or a company needing verification, we're here to help.</p>
+              <p className="text-xl text-slate-400 mb-12">
+                Whether you're a university looking to modernize or a company needing verification, we're here to help.
+              </p>
 
               <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                <a href="mailto:info@blockcertify.com" className="flex items-center gap-3 px-10 py-5 bg-primary text-white rounded-full font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all">
+                <a
+                  href="mailto:info@blockcertify.com"
+                  className="flex items-center gap-3 px-10 py-5 bg-primary text-white rounded-full font-bold shadow-xl shadow-primary/20 hover:scale-105 transition-all"
+                >
                   <EnvelopeIcon className="w-6 h-6" /> Send an Email
                 </a>
                 <button className="flex items-center gap-3 px-10 py-5 bg-white/10 text-white rounded-full font-bold border border-white/10 hover:bg-white/20 transition-all">
@@ -333,7 +416,15 @@ export const LandingPage = ({ onAccess }: LandingPageProps) => {
 
           <div className="flex items-center gap-8">
             <div className="hidden md:flex gap-8 text-sm font-bold text-slate-400">
-              {["Privacy", "Terms", "Documentation", "Legal"].map(i => <a key={i} href="#" className="hover:text-slate-900 transition-colors uppercase tracking-widest text-[10px]">{i}</a>)}
+              {["Privacy", "Terms", "Documentation", "Legal"].map(i => (
+                <a
+                  key={i}
+                  href="#"
+                  className="hover:text-slate-900 transition-colors uppercase tracking-widest text-[10px]"
+                >
+                  {i}
+                </a>
+              ))}
             </div>
             <div className="flex items-center gap-4 pl-8 border-l border-slate-100">
               <SwitchTheme className="pointer-events-auto" />

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { BuildingLibraryIcon, MagnifyingGlassIcon, UserIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
 import { LandingPage } from "./_components/LandingPage";
+import { ArrowLeftIcon, BuildingLibraryIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
 
 export default function Home() {
   const [showApp, setShowApp] = useState(false);
@@ -31,7 +31,6 @@ export default function Home() {
 
       <div className="w-full pb-20">
         <div className="flex justify-center items-stretch gap-8 flex-col lg:flex-row max-w-7xl mx-auto">
-
           {/* University Card */}
           <div className="flex-1 card max-w-sm bg-white shadow-2xl shadow-blue-900/10 rounded-[2.5rem] border border-slate-50 overflow-hidden hover:scale-[1.02] transition-all">
             <div className="card-body p-10 items-center text-center">
@@ -40,7 +39,8 @@ export default function Home() {
               </div>
               <h2 className="text-2xl font-bold text-slate-800 mb-2">University Admin</h2>
               <p className="text-slate-500 text-sm leading-relaxed mb-8 flex-grow">
-                Registered academic institutions can secure and anchor new student certificates directly to the immutable ledger.
+                Registered academic institutions can secure and anchor new student certificates directly to the
+                immutable ledger.
               </p>
               <Link href="/university" className="w-full">
                 <button className="btn btn-primary w-full h-14 rounded-2xl font-bold shadow-lg shadow-primary/20 bg-[#93C5FD] border-none text-white hover:bg-primary transition-colors">
@@ -85,7 +85,6 @@ export default function Home() {
               </Link>
             </div>
           </div>
-
         </div>
       </div>
     </div>
