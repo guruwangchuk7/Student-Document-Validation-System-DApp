@@ -169,60 +169,64 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
   // AUTHENTICATION & ACCESS CONTROL UI
   if (!user || !isAdmin) {
     return (
-      <div className="min-h-[80vh] flex items-center justify-center px-4 bg-gray-50">
-        <div className="card w-full max-w-md bg-white shadow-[0_20px_60px_-15px_rgba(0,0,0,0.1)] rounded-[2.5rem] overflow-hidden border border-gray-100 animate-in fade-in zoom-in duration-500">
-          <div className="card-body p-12">
-            <div className="text-center">
-              <div className="bg-primary/5 w-24 h-24 rounded-3xl flex items-center justify-center mx-auto mb-8 transform -rotate-6">
-                {user && !isAdmin ? (
-                  <LockClosedIcon className="h-12 w-12 text-error" />
-                ) : (
-                  <BuildingLibraryIcon className="h-12 w-12 text-primary" />
-                )}
+      <div className="min-h-[80vh] flex items-center justify-center px-4 py-12">
+        <div className="card w-full max-w-md bg-base-100 shadow-2xl border-t-4 border-primary rounded-[2rem] overflow-hidden">
+          <div className="card-body p-8 sm:p-12">
+            <div className="text-center mb-10">
+              <div className="bg-primary/10 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                <BuildingLibraryIcon className="h-10 w-10 text-primary" />
               </div>
-
-              <h2 className="text-3xl font-black text-slate-800 mb-3 tracking-tight">
-                {user && !isAdmin ? "Access Restricted" : "University Admin"}
-              </h2>
-              <p className="text-sm font-medium text-slate-400 mb-10 leading-relaxed max-w-[240px] mx-auto">
+              <h2 className="text-3xl font-bold text-base-content tracking-tight">University Admin</h2>
+              <p className="text-sm opacity-60 mt-2">
                 {user && !isAdmin
-                  ? `Authenticated as ${user.email}, but you lack administration rights.`
-                  : "Please sign in to your official university account to issue certificates."}
+                  ? "Access Restricted: Administrative account required"
+                  : "Issue and manage blockchain-verified certifications"}
               </p>
             </div>
 
-            {!user ? (
-              <button
-                className={`btn btn-primary w-full h-16 rounded-2xl gap-3 text-lg font-bold shadow-xl shadow-primary/20 bg-gradient-to-r from-primary to-primary-focus border-none hover:scale-[1.02] active:scale-[0.98] transition-all ${isLoggingIn ? "loading" : ""}`}
-                onClick={handleLogin}
-                disabled={isLoggingIn}
-              >
-                {!isLoggingIn && (
-                  <Image
-                    src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
-                    width={24}
-                    height={24}
-                    className="bg-white p-1 rounded-lg"
-                    alt="Google"
-                  />
-                )}
-                {isLoggingIn ? "Connecting..." : "Continue with Google"}
-              </button>
-            ) : (
-              <div className="space-y-4">
-                <button
-                  className="btn btn-outline btn-error w-full h-14 rounded-2xl font-bold"
-                  onClick={() => logout()}
-                >
-                  Switch Account
-                </button>
-              </div>
-            )}
+            <div className="space-y-6">
+              {!user ? (
+                <div className="flex flex-col gap-4">
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-center mb-2">
+                    Official Personnel Only
+                  </p>
+                  <button
+                    className={`btn btn-primary w-full h-14 rounded-full gap-3 text-lg font-bold shadow-lg shadow-primary/20 transition-all ${isLoggingIn ? "loading" : ""}`}
+                    onClick={handleLogin}
+                    disabled={isLoggingIn}
+                  >
+                    {!isLoggingIn && (
+                      <Image
+                        src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
+                        width={24}
+                        height={24}
+                        className="bg-white p-1 rounded-md"
+                        alt="Google"
+                      />
+                    )}
+                    {isLoggingIn ? "Connecting..." : "Login to Dashboard"}
+                  </button>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="bg-error/10 p-4 rounded-2xl flex items-center gap-3 border border-error/20">
+                    <LockClosedIcon className="h-5 w-5 text-error" />
+                    <p className="text-xs font-medium text-error leading-tight">
+                      Logged in as {user.email}, but this account lacks permission.
+                    </p>
+                  </div>
+                  <button
+                    className="btn btn-outline btn-error w-full h-14 rounded-full font-bold"
+                    onClick={() => logout()}
+                  >
+                    Switch Account
+                  </button>
+                </div>
+              )}
+            </div>
 
-            <div className="mt-8 pt-8 border-t border-slate-50 text-center">
-              <p className="text-[10px] uppercase tracking-[0.2em] font-black text-slate-300">
-                Secure Blockchain Access
-              </p>
+            <div className="mt-12 pt-8 border-t border-base-200 text-center">
+              <p className="text-[10px] uppercase tracking-[0.2em] font-black opacity-30">Secure Blockchain Registry</p>
             </div>
           </div>
         </div>

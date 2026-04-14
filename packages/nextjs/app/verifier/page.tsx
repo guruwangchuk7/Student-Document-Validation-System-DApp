@@ -90,16 +90,16 @@ const VerifierDashboard = () => {
 
                   <div className="grid grid-cols-1 gap-1 text-sm w-full">
                     <p>
-                      <b>Student:</b> {verifiedCertificate.full_name || verifiedCertificate.student_identifier}
+                      <b>Student ID:</b> {verifiedCertificate.studentIdentifier}
                     </p>
                     <p>
-                      <b>Degree:</b> {verifiedCertificate.degree_name}
+                      <b>Degree:</b> {verifiedCertificate.degreeName}
                     </p>
                     <p>
-                      <b>University:</b> {verifiedCertificate.university_name}
+                      <b>University:</b> {verifiedCertificate.universityName}
                     </p>
                     <p>
-                      <b>Graduation:</b> {verifiedCertificate.graduation_date}
+                      <b>Graduation:</b> {verifiedCertificate.graduationDate}
                     </p>
                   </div>
 
@@ -130,8 +130,20 @@ const VerifierDashboard = () => {
                     )}
                   </div>
 
-                  <div className="mt-2 text-[10px] opacity-40 break-all w-full">
-                    <b>IPFS CID:</b> {verifiedCertificate.ipfs_cid}
+                  <div className="mt-4 w-full">
+                    <a
+                      href={`https://gateway.pinata.cloud/ipfs/${verifiedCertificate.ipfsCID}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-sm btn-outline btn-success w-full gap-2 rounded-xl"
+                    >
+                      <DocumentMagnifyingGlassIcon className="h-4 w-4" />
+                      View Original Document
+                    </a>
+                  </div>
+
+                  <div className="mt-3 text-[9px] opacity-40 break-all w-full text-center">
+                    <b>IPFS CID:</b> {verifiedCertificate.ipfsCID}
                   </div>
                 </div>
               )}

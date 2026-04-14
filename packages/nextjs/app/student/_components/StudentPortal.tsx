@@ -208,14 +208,14 @@ const StudentPortal = () => {
 
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold flex items-center gap-2">
+                  <span className="label-text font-bold text-gray-500 flex items-center gap-2 px-1">
                     <IdentificationIcon className="h-4 w-4" /> Student ID / CID
                   </span>
                 </label>
                 <input
                   type="text"
                   placeholder="e.g., student-001"
-                  className="input input-bordered focus:input-primary transition-all"
+                  className="input input-bordered w-full h-14 px-6 rounded-full border-gray-200 focus:border-primary focus:outline-none transition-all bg-white"
                   value={studentId}
                   onChange={e => setStudentId(e.target.value)}
                 />
@@ -223,14 +223,14 @@ const StudentPortal = () => {
 
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold flex items-center gap-2">
+                  <span className="label-text font-bold text-gray-500 flex items-center gap-2 px-1">
                     <EnvelopeIcon className="h-4 w-4" /> Email Address
                   </span>
                 </label>
                 <input
                   type="email"
                   placeholder="student@example.com"
-                  className="input input-bordered focus:input-primary transition-all"
+                  className="input input-bordered w-full h-14 px-6 rounded-full border-gray-200 focus:border-primary focus:outline-none transition-all bg-white"
                   value={email}
                   onChange={e => setEmail(e.target.value)}
                 />
@@ -238,14 +238,14 @@ const StudentPortal = () => {
 
               <div className="form-control">
                 <label className="label">
-                  <span className="label-text font-semibold flex items-center gap-2">
+                  <span className="label-text font-bold text-gray-500 flex items-center gap-2 px-1">
                     <KeyIcon className="h-4 w-4" /> Password
                   </span>
                 </label>
                 <input
                   type="password"
                   placeholder="••••••••"
-                  className="input input-bordered focus:input-primary transition-all"
+                  className="input input-bordered w-full h-14 px-6 rounded-full border-gray-200 focus:border-primary focus:outline-none transition-all bg-white"
                   value={password}
                   onChange={e => setPassword(e.target.value)}
                 />

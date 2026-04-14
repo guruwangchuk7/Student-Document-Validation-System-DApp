@@ -1,21 +1,16 @@
 import deployedContracts from "../../contracts/deployedContracts";
+import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 import formidable, { Fields, File as FormidableFile } from "formidable";
 import fs from "fs";
-import mysql from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createPublicClient, http } from "viem";
 import { hardhat } from "viem/chains";
 
 export const config = { api: { bodyParser: false } };
 
-// 🔒 DB configuration
-const dbConfig = {
-  host: process.env.MYSQL_HOST || "localhost",
-  user: process.env.MYSQL_USER || "root",
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE || "student_certificates_db",
-};
+// 🔒 Initialize Supabase
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!);
 
 const hashFile = (filePath: string): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -54,19 +49,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const certificateHash = await hashFile(certificateFile.filepath);
     const hashAsBytes32 = `0x${certificateHash}` as `0x${string}`;
 
-    // Perform MySQL lookup and Blockchain verification in parallel
+    // Parallel IO tasks
     const [dbResult, blockchainResult] = await Promise.all([
-      (async () => {
-        const conn = await mysql.createConnection(dbConfig);
-        try {
-          const [rows]: any = await conn.execute("SELECT * FROM certificates WHERE certificate_hash = ?", [
-            certificateHash,
-          ]);
-          return rows;
-        } finally {
-          await conn.end();
-        }
-      })(),
+      supabase.from("certificates").select("*").eq("certificate_hash", certificateHash),
       (async () => {
         try {
           return await publicClient.readContract({
@@ -82,11 +67,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       })(),
     ]);
 
-    const certificates = dbResult;
+    const { data: certificates, error: dbError } = dbResult;
     const [isBlockchainVerified, issuer, timestamp] = blockchainResult as any;
 
-    if (!certificates || certificates.length === 0) {
-      return res.status(200).json({ verified: false, message: "Certificate not found in local database registry." });
+    if (dbError || !certificates || certificates.length === 0) {
+      return res.status(200).json({ verified: false, message: "Certificate not found in Supabase database." });
     }
 
     const certificate = certificates[0];

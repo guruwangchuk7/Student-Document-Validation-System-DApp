@@ -1,9 +1,9 @@
 import deployedContracts from "../../contracts/deployedContracts";
 import PinataSDK from "@pinata/sdk";
+import { createClient } from "@supabase/supabase-js";
 import crypto from "crypto";
 import formidable from "formidable";
 import fs from "fs";
-import mysql from "mysql2/promise";
 import type { NextApiRequest, NextApiResponse } from "next";
 import { createWalletClient, http, publicActions } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
@@ -12,13 +12,8 @@ import { hardhat } from "viem/chains";
 // Disable default body parser
 export const config = { api: { bodyParser: false } };
 
-// 🔒 DB configuration
-const dbConfig = {
-  host: process.env.MYSQL_HOST || "localhost",
-  user: process.env.MYSQL_USER || "root",
-  password: process.env.MYSQL_PASSWORD,
-  database: process.env.MYSQL_DATABASE || "student_certificates_db",
-};
+// 🔒 Initialize Supabase
+const supabase = createClient(process.env.NEXT_PUBLIC_SUPABASE_URL!, process.env.SUPABASE_SERVICE_ROLE_KEY!);
 
 // Initialize Pinata
 const pinata = new PinataSDK(process.env.PINATA_API_KEY!, process.env.PINATA_SECRET_KEY!);
@@ -64,6 +59,8 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const graduationDate = toString(fields.graduationDate);
     const universityName = toString(fields.universityName);
     const studentIdentifier = toString(fields.studentIdentifier);
+    const gender = toString(fields.gender);
+    const dateOfBirth = toString(fields.dateOfBirth);
 
     // Extract uploaded file
     const fileArray = files.file as formidable.File[] | formidable.File | undefined;
@@ -76,7 +73,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     const certificateHash = crypto.createHash("sha256").update(fileBuffer).digest("hex");
     const hashAsBytes32 = `0x${certificateHash}` as `0x${string}`;
 
-    // 1. Upload to Pinata and 2. Anchor on-chain in parallel
+    // Parallel IO tasks
     const [pinataResult, txHash] = await Promise.all([
       pinata.pinFileToIPFS(fs.createReadStream(file.filepath), {
         pinataMetadata: { name: certificateId },
@@ -98,30 +95,22 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
     const ipfsCID = pinataResult.IpfsHash;
 
-    // 3. Save to MySQL (Primary source for student portal)
-    const conn = await mysql.createConnection(dbConfig);
-    try {
-      await conn.execute(
-        `INSERT INTO certificates 
-         (certificate_id, student_identifier, degree_name, university_name, graduation_date, ipfs_cid, certificate_hash) 
-         VALUES (?, ?, ?, ?, ?, ?, ?)`,
-        [
-          certificateId,
-          studentIdentifier,
-          degreeName,
-          universityName,
-          graduationDate || null,
-          ipfsCID,
-          certificateHash,
-        ],
-      );
-    } catch (dbErr: any) {
-      console.error("MySQL Insert Error:", dbErr.message);
-      // Check if columns exist or table exists
-      throw new Error("Local Database storage failed: " + dbErr.message);
-    } finally {
-      await conn.end();
-    }
+    // ⚡ Save to Supabase
+    const { error: insertError } = await supabase.from("certificates").insert([
+      {
+        certificate_id: certificateId,
+        student_identifier: studentIdentifier,
+        degree_name: degreeName,
+        university_name: universityName,
+        graduation_date: graduationDate || null,
+        ipfs_cid: ipfsCID,
+        certificate_hash: certificateHash,
+        gender: gender || null,
+        date_of_birth: dateOfBirth || null,
+      },
+    ]);
+
+    if (insertError) throw insertError;
 
     return res.status(200).json({ success: true, ipfsCID, txHash });
   } catch (error: any) {
