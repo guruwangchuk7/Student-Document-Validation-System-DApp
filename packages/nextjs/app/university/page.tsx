@@ -28,5 +28,5 @@ export default async function UniversityAdminPage() {
     data: { session },
   } = await supabase.auth.getSession();
 
-  return <UniversityDashboard initialUser={session?.user ?? null} />;
+  return <UniversityDashboard initialUser={session?.user ? JSON.parse(JSON.stringify(session.user)) : null} />;
 }

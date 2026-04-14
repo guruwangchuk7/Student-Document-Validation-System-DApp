@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { RainbowKitProvider, darkTheme, lightTheme } from "@rainbow-me/rainbowkit";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AppProgressBar as ProgressBar } from "next-nprogress-bar";
+import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
 import { WagmiProvider } from "wagmi";
 import { Footer } from "~~/components/Footer";
@@ -14,13 +15,15 @@ import { wagmiConfig } from "~~/services/web3/wagmiConfig";
 
 const ScaffoldEthApp = ({ children }: { children: React.ReactNode }) => {
   useInitializeNativeCurrencyPrice();
+  const pathname = usePathname();
+  const isLandingPage = pathname === "/";
 
   return (
     <>
-      <div className={`flex flex-col min-h-screen `}>
-        <Header />
+      <div className={`flex flex-col min-h-screen ${isLandingPage ? 'overflow-hidden' : ''}`}>
+        {!isLandingPage && <Header />}
         <main className="relative flex flex-col flex-1">{children}</main>
-        <Footer />
+        {!isLandingPage && <Footer />}
       </div>
       {/* Toaster moved to app/layout.tsx to avoid duplicate notifications */}
     </>

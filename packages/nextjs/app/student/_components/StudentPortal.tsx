@@ -254,10 +254,14 @@ const StudentPortal = () => {
               <div className="card-actions mt-6">
                 <button
                   type="submit"
-                  className={`btn btn-primary w-full shadow-lg ${isLoading ? "loading" : ""}`}
+                  className="btn btn-primary w-full shadow-lg"
                   disabled={isLoading}
                 >
-                  {isLoading ? "Processing..." : isRegistering ? "Create Student Account" : "Login to Dashboard"}
+                  {isLoading ? (
+                    <span className="loading loading-spinner loading-sm"></span>
+                  ) : (
+                    isRegistering ? "Create Student Account" : "Login to Dashboard"
+                  )}
                 </button>
               </div>
             </form>

@@ -18,7 +18,6 @@ interface UniversityDashboardProps {
 
 const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
   const [user, setUser] = useState<User | null>(initialUser);
-  const [isLoadingSession, setIsLoadingSession] = useState(!initialUser);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
   const [certificateIdInput, setCertificateIdInput] = useState("");
@@ -37,13 +36,6 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
   useEffect(() => {
     let mounted = true;
 
-    // Fail-safe timeout: Ensure we stop loading after 3 seconds no matter what
-    const timer = setTimeout(() => {
-      if (mounted) {
-        setIsLoadingSession(false);
-      }
-    }, 3000);
-
     // If we don't have an initial user, we MUST check on the client
     if (!initialUser) {
       const initSession = async () => {
@@ -53,22 +45,17 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
           } = await supabase.auth.getUser();
           if (mounted) {
             setUser(supabaseUser);
-            setIsLoadingSession(false);
-            clearTimeout(timer);
           }
         } catch (err) {
           console.error("Session check error:", err);
           if (mounted) {
-            setIsLoadingSession(false);
-            clearTimeout(timer);
+            // Silence error
           }
         }
       };
       initSession();
     } else {
       // If server provided the user, we are already done
-      setIsLoadingSession(false);
-      clearTimeout(timer);
     }
 
     // Subscribe to future changes
@@ -77,14 +64,11 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
     } = supabase.auth.onAuthStateChange((_event, session) => {
       if (mounted) {
         setUser(session?.user ?? null);
-        setIsLoadingSession(false);
-        clearTimeout(timer);
       }
     });
 
     return () => {
       mounted = false;
-      clearTimeout(timer);
       subscription.unsubscribe();
     };
   }, [initialUser]);
@@ -158,13 +142,6 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
     }
   };
 
-  if (isLoadingSession) {
-    return (
-      <div className="flex justify-center items-center mt-20">
-        <span className="loading loading-spinner loading-lg"></span>
-      </div>
-    );
-  }
 
   // AUTHENTICATION & ACCESS CONTROL UI
   if (!user || !isAdmin) {
@@ -191,11 +168,13 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
                     Official Personnel Only
                   </p>
                   <button
-                    className={`btn btn-primary w-full h-14 rounded-full gap-3 text-lg font-bold shadow-lg shadow-primary/20 transition-all ${isLoggingIn ? "loading" : ""}`}
+                    className="btn btn-primary w-full h-14 rounded-full gap-3 text-lg font-bold shadow-lg shadow-primary/20 transition-all"
                     onClick={handleLogin}
                     disabled={isLoggingIn}
                   >
-                    {!isLoggingIn && (
+                    {isLoggingIn ? (
+                      <span className="loading loading-spinner loading-sm"></span>
+                    ) : (
                       <Image
                         src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
                         width={24}
