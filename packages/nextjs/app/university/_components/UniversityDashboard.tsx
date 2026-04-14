@@ -73,7 +73,13 @@ const UniversityDashboard = ({ initialUser }: UniversityDashboardProps) => {
     };
   }, [initialUser]);
 
-  const isAdmin = user?.email === (process.env.NEXT_PUBLIC_ADMIN_EMAIL || "Jamtsholhawang@gmail.com");
+  const adminEmails = [
+    process.env.NEXT_PUBLIC_ADMIN_EMAIL?.toLowerCase(),
+    "guruwangchuk1234@gmail.com",
+    "jamtsholhawang@gmail.com",
+  ].filter(Boolean);
+
+  const isAdmin = user?.email && adminEmails.includes(user.email.toLowerCase());
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) setSelectedFile(e.target.files[0]);
